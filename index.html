@@ -89,12 +89,17 @@ h1 {
     position: absolute;
     left: 110%; /* appear to the right of the icon */
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) translateX(-10px); /* start slightly left */
     opacity: 0;
-    color: #aaa;
-    font-size: 0.95rem;
-    transition: opacity 0.5s ease;
+    color: #fff;
+    background: rgba(114, 137, 218, 0.15); /* Discord purple, subtle */
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 500;
     white-space: nowrap;
+    text-shadow: 0 0 6px rgba(114, 137, 218, 0.6); /* soft glow */
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
 </style>
 </head>
@@ -115,7 +120,7 @@ h1 {
         <!-- Discord wrapper -->
         <div id="discordWrapper">
             <a href="javascript:void(0);" id="discordToggle" aria-label="Discord"><i class="fab fa-discord"></i></a>
-            <span id="discordUsername">drdavidreed</span>
+            <span id="discordUsername">DrDavidReed</span>
         </div>
     </div>
 </div>
@@ -136,21 +141,23 @@ particlesJS("particles-js", {
     }
 });
 
-// Discord fade in/out
+// Discord fade in/out with slide
 const discordToggle = document.getElementById("discordToggle");
 const discordUsername = document.getElementById("discordUsername");
 
 discordToggle.addEventListener("click", () => {
     discordUsername.style.opacity = "1";
+    discordUsername.style.transform = "translateY(-50%) translateX(0)";
 
     if(discordUsername.fadeTimeout) clearTimeout(discordUsername.fadeTimeout);
 
     discordUsername.fadeTimeout = setTimeout(() => {
         discordUsername.style.opacity = "0";
+        discordUsername.style.transform = "translateY(-50%) translateX(-10px)";
     }, 5000);
 });
 
-// Lo-fi playlist
+// Music playlist
 const songs = [
     "lofi_music_library-lofi-girl-chill-lofi-beats-lofi-ambient-461871.mp3",
     "fassounds-lofi-study-calm-peaceful-chill-hop-112191.mp3",
