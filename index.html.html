@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DrDavidReed</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Satisfy Handwritten Font -->
+<link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(135deg, #111 0%, #222 100%);
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.content {
+    position: relative;
+    z-index: 1;
+}
+
+h1, .tagline {
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+}
+
+.tagline {
+    animation-delay: 1s;
+    font-size: 1.2rem;
+    color: #ccc;
+    margin-top: 10px;
+}
+
+@keyframes fadeIn { to { opacity: 1; } }
+
+h1 {
+    font-family: 'Satisfy', cursive;
+    font-size: 4rem;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.socials {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    position: relative;
+    align-items: center;
+}
+
+.socials a {
+    display: inline-block;
+    color: #ccc;
+    font-size: 2rem;
+    transition: 0.3s ease;
+    text-decoration: none;
+}
+
+.socials a:hover { color: white; transform: scale(1.3); }
+
+/* Discord username absolute so it does not affect centering */
+#discordWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+#discordUsername {
+    position: absolute;
+    left: 110%; /* appear to the right of the icon */
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    color: #aaa;
+    font-size: 0.95rem;
+    transition: opacity 0.5s ease;
+    white-space: nowrap;
+}
+</style>
+</head>
+<body>
+
+<div id="particles-js"></div>
+
+<div class="content">
+    <h1>DrDavidReed</h1>
+    <div class="tagline">Hi, I’m Connor. I enjoy tech, gaming, and movies.</div>
+
+    <div class="socials">
+        <a href="https://www.youtube.com/@DrDavidReed" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://steamcommunity.com/id/xDConnor/" aria-label="Steam"><i class="fab fa-steam"></i></a>
+        <a href="https://letterboxd.com/DrDavidReed/" aria-label="Letterboxd"><i class="fas fa-film"></i></a>
+        <a href="mailto:DrDavidReed@protonmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+
+        <!-- Discord wrapper -->
+        <div id="discordWrapper">
+            <a href="javascript:void(0);" id="discordToggle" aria-label="Discord"><i class="fab fa-discord"></i></a>
+            <span id="discordUsername">drdavidreed</span>
+        </div>
+    </div>
+</div>
+
+<!-- Background music -->
+<audio id="bgMusic" loop></audio>
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script>
+// Particles
+particlesJS("particles-js", {
+    particles: {
+        number: { value: 50 },
+        size: { value: 2 },
+        color: { value: "#ffffff" },
+        line_linked: { enable: false },
+        move: { speed: 0.5, direction: "top", out_mode: "out" }
+    }
+});
+
+// Discord fade in/out
+const discordToggle = document.getElementById("discordToggle");
+const discordUsername = document.getElementById("discordUsername");
+
+discordToggle.addEventListener("click", () => {
+    discordUsername.style.opacity = "1";
+
+    if(discordUsername.fadeTimeout) clearTimeout(discordUsername.fadeTimeout);
+
+    discordUsername.fadeTimeout = setTimeout(() => {
+        discordUsername.style.opacity = "0";
+    }, 5000);
+});
+
+// Lo-fi playlist
+const songs = [
+    "lofi_music_library-lofi-girl-chill-lofi-beats-lofi-ambient-461871.mp3",
+    "fassounds-lofi-study-calm-peaceful-chill-hop-112191.mp3",
+    "lofi_music_library-lofi-rain-lofi-music-458077.mp3"
+];
+const audio = document.getElementById("bgMusic");
+let currentSong = Math.floor(Math.random() * songs.length);
+
+function playSong(index) {
+    audio.src = songs[index];
+    audio.volume = 0;
+    audio.play().then(() => fadeInAudio(0.25, 2000))
+    .catch(() => console.log("Autoplay blocked until user interaction."));
+}
+
+function fadeInAudio(targetVolume, duration) {
+    const step = targetVolume / (duration / 50);
+    const fade = setInterval(() => {
+        if(audio.volume < targetVolume) audio.volume = Math.min(audio.volume + step, targetVolume);
+        else clearInterval(fade);
+    }, 50);
+}
+
+audio.addEventListener("ended", () => {
+    currentSong = (currentSong + 1) % songs.length;
+    playSong(currentSong);
+});
+
+// Start audio after first user interaction
+function startAudio() {
+    playSong(currentSong);
+    window.removeEventListener("click", startAudio);
+}
+window.addEventListener("click", startAudio);
+</script>
+
+</body>
+</html>
