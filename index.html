@@ -35,7 +35,7 @@ body {
 .content {
     position: relative;
     z-index: 1;
-    padding: 0 15px; /* small padding for mobile */
+    padding: 0 15px;
 }
 
 h1, .tagline {
@@ -54,7 +54,7 @@ h1, .tagline {
 
 h1 {
     font-family: 'Satisfy', cursive;
-    font-size: clamp(2rem, 10vw, 4rem); /* responsive font */
+    font-size: clamp(2rem, 10vw, 4rem);
     margin: 0;
     text-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
@@ -80,7 +80,10 @@ h1 {
     text-decoration: none;
 }
 
-.socials a:hover { color: white; transform: scale(1.3); }
+.socials a:hover { 
+    color: white; 
+    transform: scale(1.3); 
+}
 
 /* Discord wrapper */
 #discordWrapper {
@@ -89,21 +92,30 @@ h1 {
     align-items: center;
 }
 
+/* Subtle glass-style copied bubble */
 #discordUsername {
     position: absolute;
-    left: 110%; /* appear to the right of the icon */
+    left: 110%;
     top: 50%;
     transform: translateY(-50%) translateX(-10px);
     opacity: 0;
-    color: #fff;
-    background: rgba(114, 137, 218, 0.15);
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 1rem;
+
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.85rem;
     font-weight: 500;
+    letter-spacing: 0.5px;
+
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+
     white-space: nowrap;
-    text-shadow: 0 0 6px rgba(114, 137, 218, 0.6);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 /* Responsive adjustments */
@@ -136,9 +148,11 @@ h1 {
         <a href="https://letterboxd.com/DrDavidReed/" aria-label="Letterboxd"><i class="fas fa-film"></i></a>
         <a href="mailto:DrDavidReed@protonmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
 
-        <!-- Discord wrapper -->
+        <!-- Discord -->
         <div id="discordWrapper">
-            <a href="javascript:void(0);" id="discordToggle" aria-label="Discord"><i class="fab fa-discord"></i></a>
+            <a href="javascript:void(0);" id="discordToggle" aria-label="Discord">
+                <i class="fab fa-discord"></i>
+            </a>
             <span id="discordUsername">drdavidreed</span>
         </div>
     </div>
@@ -163,20 +177,32 @@ particlesJS("particles-js", {
     }
 });
 
-// Discord fade in/out with slide
+// Discord copy-to-clipboard
 const discordToggle = document.getElementById("discordToggle");
 const discordUsername = document.getElementById("discordUsername");
 
-discordToggle.addEventListener("click", () => {
-    discordUsername.style.opacity = "1";
-    discordUsername.style.transform = "translateY(-50%) translateX(0)";
+discordToggle.addEventListener("click", async () => {
+    const username = "drdavidreed";
 
-    if(discordUsername.fadeTimeout) clearTimeout(discordUsername.fadeTimeout);
+    try {
+        await navigator.clipboard.writeText(username);
 
-    discordUsername.fadeTimeout = setTimeout(() => {
-        discordUsername.style.opacity = "0";
-        discordUsername.style.transform = "translateY(-50%) translateX(-10px)";
-    }, 5000);
+        discordUsername.textContent = "Copied!";
+        discordUsername.style.opacity = "1";
+        discordUsername.style.transform = "translateY(-50%) translateX(0)";
+
+        setTimeout(() => {
+            discordUsername.style.opacity = "0";
+            discordUsername.style.transform = "translateY(-50%) translateX(-10px)";
+            
+            setTimeout(() => {
+                discordUsername.textContent = username;
+            }, 400);
+        }, 2000);
+
+    } catch (err) {
+        console.error("Copy failed:", err);
+    }
 });
 
 // Music playlist
@@ -185,6 +211,7 @@ const songs = [
     "fassounds-lofi-study-calm-peaceful-chill-hop-112191.mp3",
     "lofi_music_library-lofi-rain-lofi-music-458077.mp3"
 ];
+
 const audio = document.getElementById("bgMusic");
 let currentSong = Math.floor(Math.random() * songs.length);
 
@@ -198,8 +225,11 @@ function playSong(index) {
 function fadeInAudio(targetVolume, duration) {
     const step = targetVolume / (duration / 50);
     const fade = setInterval(() => {
-        if(audio.volume < targetVolume) audio.volume = Math.min(audio.volume + step, targetVolume);
-        else clearInterval(fade);
+        if(audio.volume < targetVolume) {
+            audio.volume = Math.min(audio.volume + step, targetVolume);
+        } else {
+            clearInterval(fade);
+        }
     }, 50);
 }
 
