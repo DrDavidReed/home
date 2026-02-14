@@ -187,7 +187,7 @@ discordToggle.addEventListener("click", async () => {
     try {
         await navigator.clipboard.writeText(username);
 
-        discordUsername.textContent = "Copied ✓";
+        discordUsername.textContent = "*Copied*";
         discordUsername.style.opacity = "1";
         discordUsername.style.transform = "translateY(-50%) translateX(0)";
 
@@ -248,3 +248,4 @@ window.addEventListener("click", startAudio);
 
 </body>
 </html>
+
